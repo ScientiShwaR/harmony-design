@@ -1,0 +1,68 @@
+{
+  "permissions": {
+    "principal": {
+      "scopes": ["*"],
+      "description": "Full access to all modules and features"
+    },
+    "teacher": {
+      "scopes": [
+        "attendance.mark",
+        "attendance.view",
+        "students.view",
+        "academics.view",
+        "academics.assessments.edit",
+        "reports.generate"
+      ],
+      "description": "Access to teaching-related features"
+    },
+    "admin": {
+      "scopes": [
+        "students.*",
+        "staff.view",
+        "finance.view",
+        "compliance.*",
+        "certificates.issue"
+      ],
+      "description": "Administrative access"
+    },
+    "viewer": {
+      "scopes": [
+        "*.view"
+      ],
+      "description": "Read-only access to all modules"
+    }
+  },
+  "workflow": {
+    "attendance": {
+      "editWindow": {
+        "hours": 48,
+        "description": "Attendance can be edited within 48 hours of marking"
+      },
+      "monthCloseDay": 5,
+      "monthCloseDescription": "Attendance locks on the 5th of the following month"
+    },
+    "expenses": {
+      "approvalThreshold": 5000,
+      "approvalThresholdCurrency": "INR",
+      "approvalDescription": "Expenses above ₹5,000 require principal approval"
+    },
+    "certificates": {
+      "requireApproval": true,
+      "approverRole": "principal"
+    },
+    "evidence": {
+      "overdueReminderDays": [7, 3, 1],
+      "escalationAfterDays": 14
+    }
+  },
+  "validation": {
+    "student": {
+      "requiredFields": ["name", "dob", "class", "parentName", "parentPhone"],
+      "optionalFields": ["address", "email", "medicalNotes"]
+    },
+    "staff": {
+      "requiredFields": ["name", "designation", "phone", "email", "joinDate"],
+      "requiredDocuments": ["idProof", "qualificationProof", "policeVerification"]
+    }
+  }
+}

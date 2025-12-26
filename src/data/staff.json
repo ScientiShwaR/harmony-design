@@ -1,0 +1,48 @@
+[
+  {
+    "id": "staff-001",
+    "name": "Arun Kumar",
+    "designation": "Principal",
+    "department": "Administration",
+    "joinDate": "2015-06-01",
+    "phone": "+91 98765 12345",
+    "email": "arun.kumar@kv.edu",
+    "status": "active"
+  },
+  {
+    "id": "staff-002",
+    "name": "Priya Menon",
+    "designation": "Teacher",
+    "department": "Primary",
+    "subjects": ["Mathematics", "Science"],
+    "classAssignment": "5A",
+    "joinDate": "2018-07-15",
+    "phone": "+91 98765 12346",
+    "email": "priya.menon@kv.edu",
+    "status": "active"
+  },
+  {
+    "id": "staff-003",
+    "name": "Ramesh Sundaram",
+    "designation": "Teacher",
+    "department": "Primary",
+    "subjects": ["English", "Social Studies"],
+    "classAssignment": "5B",
+    "joinDate": "2019-06-01",
+    "phone": "+91 98765 12347",
+    "email": "ramesh.s@kv.edu",
+    "status": "active"
+  },
+  {
+    "id": "staff-004",
+    "name": "Sunita Patil",
+    "designation": "Teacher",
+    "department": "Primary",
+    "subjects": ["Marathi", "Hindi"],
+    "classAssignment": "4A",
+    "joinDate": "2017-08-01",
+    "phone": "+91 98765 12348",
+    "email": "sunita.p@kv.edu",
+    "status": "active"
+  }
+]

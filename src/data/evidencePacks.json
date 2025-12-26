@@ -1,0 +1,56 @@
+[
+  {
+    "id": "pack-001",
+    "name": "Fire Safety Compliance",
+    "category": "Safety",
+    "description": "Documentation for fire safety equipment, drills, and certifications",
+    "owner": "staff-003",
+    "dueDate": "2024-12-31",
+    "status": "in_progress",
+    "items": [
+      { "id": "item-001", "name": "Fire extinguisher inspection certificate", "required": true, "completed": true },
+      { "id": "item-002", "name": "Fire drill attendance sheet - Q1", "required": true, "completed": true },
+      { "id": "item-003", "name": "Fire drill attendance sheet - Q2", "required": true, "completed": true },
+      { "id": "item-004", "name": "Fire drill attendance sheet - Q3", "required": true, "completed": true },
+      { "id": "item-005", "name": "Fire drill attendance sheet - Q4", "required": true, "completed": false },
+      { "id": "item-006", "name": "Fire drill photos - Q4", "required": true, "completed": false },
+      { "id": "item-007", "name": "Emergency evacuation plan", "required": true, "completed": true },
+      { "id": "item-008", "name": "Staff fire safety training certificate", "required": false, "completed": true }
+    ],
+    "createdAt": "2024-01-01",
+    "updatedAt": "2024-12-20"
+  },
+  {
+    "id": "pack-002",
+    "name": "Student Records - Class 5",
+    "category": "Academic",
+    "description": "Complete student documentation for Class 5 students",
+    "owner": "staff-002",
+    "dueDate": "2024-12-15",
+    "status": "complete",
+    "items": [
+      { "id": "item-010", "name": "Admission forms", "required": true, "completed": true },
+      { "id": "item-011", "name": "Transfer certificates", "required": true, "completed": true },
+      { "id": "item-012", "name": "Medical records", "required": true, "completed": true }
+    ],
+    "createdAt": "2024-06-01",
+    "updatedAt": "2024-12-10"
+  },
+  {
+    "id": "pack-003",
+    "name": "Staff Verification Documents",
+    "category": "HR",
+    "description": "Background verification and qualification documents for all staff",
+    "owner": "staff-001",
+    "dueDate": "2024-12-20",
+    "status": "overdue",
+    "items": [
+      { "id": "item-020", "name": "Police verification certificates", "required": true, "completed": true },
+      { "id": "item-021", "name": "Educational qualification proofs", "required": true, "completed": true },
+      { "id": "item-022", "name": "Previous employer references", "required": true, "completed": false },
+      { "id": "item-023", "name": "Medical fitness certificates", "required": true, "completed": false }
+    ],
+    "createdAt": "2024-03-01",
+    "updatedAt": "2024-12-18"
+  }
+]
