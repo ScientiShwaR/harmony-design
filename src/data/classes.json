@@ -1,0 +1,38 @@
+[
+  {
+    "id": "class-4a",
+    "name": "Class 4A",
+    "grade": 4,
+    "section": "A",
+    "classTeacher": "staff-004",
+    "totalStudents": 30,
+    "academicYear": "2024-25"
+  },
+  {
+    "id": "class-4b",
+    "name": "Class 4B",
+    "grade": 4,
+    "section": "B",
+    "classTeacher": "staff-005",
+    "totalStudents": 28,
+    "academicYear": "2024-25"
+  },
+  {
+    "id": "class-5a",
+    "name": "Class 5A",
+    "grade": 5,
+    "section": "A",
+    "classTeacher": "staff-002",
+    "totalStudents": 32,
+    "academicYear": "2024-25"
+  },
+  {
+    "id": "class-5b",
+    "name": "Class 5B",
+    "grade": 5,
+    "section": "B",
+    "classTeacher": "staff-003",
+    "totalStudents": 30,
+    "academicYear": "2024-25"
+  }
+]

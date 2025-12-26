@@ -1,0 +1,35 @@
+{
+  "themeId": "kamal-vidyalaya-default",
+  "name": "Kamal Vidyalaya (Default)",
+  "version": 1,
+  "colors": {
+    "primary": "#0B8A86",
+    "accent": "#FF7A45",
+    "background": "#FFFFFF",
+    "foreground": "#0A0A0A",
+    "muted": "#F4F6F8",
+    "border": "#E6E8EB",
+    "success": "#16A34A",
+    "warning": "#F59E0B",
+    "danger": "#DC2626",
+    "info": "#2563EB"
+  },
+  "radius": {
+    "base": 12,
+    "card": 16,
+    "button": 12
+  },
+  "typography": {
+    "fontSans": "Inter, ui-sans-serif, system-ui",
+    "fontMarathi": "ui-sans-serif, system-ui",
+    "scale": "modernReadable"
+  },
+  "density": {
+    "default": "comfortable",
+    "allowCompact": true
+  },
+  "assets": {
+    "logoLight": "/assets/kv/logo-light.svg",
+    "logoDark": "/assets/kv/logo-dark.svg"
+  }
+}

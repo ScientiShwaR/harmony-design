@@ -1,0 +1,72 @@
+[
+  {
+    "id": "student-001",
+    "name": "Aarav Sharma",
+    "rollNo": "5A-01",
+    "class": "5A",
+    "section": "A",
+    "dob": "2014-03-15",
+    "gender": "male",
+    "status": "active",
+    "admissionDate": "2020-06-01",
+    "parentName": "Rajesh Sharma",
+    "parentPhone": "+91 98765 43210",
+    "address": "123, Green Park, Pune"
+  },
+  {
+    "id": "student-002",
+    "name": "Ananya Patel",
+    "rollNo": "5A-02",
+    "class": "5A",
+    "section": "A",
+    "dob": "2014-07-22",
+    "gender": "female",
+    "status": "active",
+    "admissionDate": "2020-06-01",
+    "parentName": "Vikram Patel",
+    "parentPhone": "+91 98765 43211",
+    "address": "456, Blue Hills, Pune"
+  },
+  {
+    "id": "student-003",
+    "name": "Arjun Reddy",
+    "rollNo": "5A-03",
+    "class": "5A",
+    "section": "A",
+    "dob": "2014-01-08",
+    "gender": "male",
+    "status": "active",
+    "admissionDate": "2020-06-01",
+    "parentName": "Krishna Reddy",
+    "parentPhone": "+91 98765 43212",
+    "address": "789, Sunset View, Pune"
+  },
+  {
+    "id": "student-004",
+    "name": "Diya Gupta",
+    "rollNo": "5A-04",
+    "class": "5A",
+    "section": "A",
+    "dob": "2014-11-30",
+    "gender": "female",
+    "status": "active",
+    "admissionDate": "2020-06-01",
+    "parentName": "Amit Gupta",
+    "parentPhone": "+91 98765 43213",
+    "address": "321, River Side, Pune"
+  },
+  {
+    "id": "student-005",
+    "name": "Ishaan Kumar",
+    "rollNo": "5B-01",
+    "class": "5B",
+    "section": "B",
+    "dob": "2014-05-12",
+    "gender": "male",
+    "status": "active",
+    "admissionDate": "2020-06-01",
+    "parentName": "Suresh Kumar",
+    "parentPhone": "+91 98765 43214",
+    "address": "654, Mountain View, Pune"
+  }
+]
