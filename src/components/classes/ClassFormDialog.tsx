@@ -150,14 +150,17 @@ export function ClassFormDialog({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Section</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select 
+                      onValueChange={(val) => field.onChange(val === "_none" ? "" : val)} 
+                      value={field.value || "_none"}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select section" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="">No Section</SelectItem>
+                        <SelectItem value="_none">No Section</SelectItem>
                         {sections.map((sec) => (
                           <SelectItem key={sec} value={sec}>
                             Section {sec}
@@ -202,14 +205,17 @@ export function ClassFormDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Class Teacher</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select 
+                    onValueChange={(val) => field.onChange(val === "_none" ? "" : val)} 
+                    value={field.value || "_none"}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Assign a teacher" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">No Teacher Assigned</SelectItem>
+                      <SelectItem value="_none">No Teacher Assigned</SelectItem>
                       {staff.map((s) => (
                         <SelectItem key={s.id} value={s.id}>
                           {s.first_name} {s.last_name}
