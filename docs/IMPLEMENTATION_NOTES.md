@@ -1,13 +1,17 @@
 # School OS v1.0 Governance Core - Implementation Notes
 
+## ✅ IMPLEMENTATION STATUS: COMPLETE
+
+v1.0 Governance Core has been implemented with:
+- ✅ Lovable Cloud enabled (database + auth)
+- ✅ Authentication (login/signup/logout)
+- ✅ RBAC with 4 role bundles (Teacher, Clerk, Principal, Admin)
+- ✅ Command Bus for all mutations
+- ✅ Append-only Audit Log
+- ✅ Versioned Policy Engine
+- ✅ Settings pages (Users, Roles, Policies, Audit Log)
+
 ## Route Map
-
-```
-/                          → Home (Dashboard)
-/login                     → Login (NEW)
-
-Work:
-/work                      → Tasks & Approvals
 /work/tasks                → My Tasks
 /work/approvals            → Approvals Queue
 /work/exceptions           → Exceptions
