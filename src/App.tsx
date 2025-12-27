@@ -19,6 +19,8 @@ import AssessmentsPage from "./pages/academics/Assessments";
 import ReportCardsPage from "./pages/academics/ReportCards";
 import CertificatesPage from "./pages/academics/Certificates";
 import EvidenceVaultPage from "./pages/compliance/EvidenceVault";
+import ProcurementPage from "./pages/finance/Procurement";
+import ExpensesPage from "./pages/finance/Expenses";
 import UsersPage from "./pages/settings/Users";
 import RolesPage from "./pages/settings/Roles";
 import PoliciesPage from "./pages/settings/Policies";
@@ -60,8 +62,8 @@ const App = () => (
             <Route path="/academics/certificates" element={<ProtectedRoute permission="students.read"><CertificatesPage /></ProtectedRoute>} />
             
             {/* Finance */}
-            <Route path="/finance/procurement" element={<ProtectedRoute><WorkPage /></ProtectedRoute>} />
-            <Route path="/finance/expenses" element={<ProtectedRoute><WorkPage /></ProtectedRoute>} />
+            <Route path="/finance/procurement" element={<ProtectedRoute><ProcurementPage /></ProtectedRoute>} />
+            <Route path="/finance/expenses" element={<ProtectedRoute><ExpensesPage /></ProtectedRoute>} />
             
             {/* Operations */}
             <Route path="/operations/inventory" element={<ProtectedRoute><WorkPage /></ProtectedRoute>} />
