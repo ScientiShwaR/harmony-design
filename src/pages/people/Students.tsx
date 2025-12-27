@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -68,6 +69,12 @@ interface Student {
   created_at: string;
 }
 
+interface ClassInfo {
+  id: string;
+  name: string;
+  section: string | null;
+}
+
 export default function StudentsPage() {
   const { user, roles, permissions, isAdmin } = useAuth();
   const [students, setStudents] = useState<Student[]>([]);
@@ -84,6 +91,25 @@ export default function StudentsPage() {
   // Delete confirmation state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
+
+  // Fetch classes for display
+  const { data: classesMap = {} } = useQuery({
+    queryKey: ['classes-map'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('classes')
+        .select('id, name, section')
+        .eq('is_active', true);
+
+      if (error) throw error;
+      
+      const map: Record<string, ClassInfo> = {};
+      data?.forEach((c) => {
+        map[c.id] = c;
+      });
+      return map;
+    },
+  });
 
   const fetchStudents = async () => {
     setIsLoading(true);
@@ -362,12 +388,18 @@ export default function StudentsPage() {
                         {student.admission_number}
                       </TableCell>
                       <TableCell>
-                        {student.class_id ? (
+                        {student.class_id && classesMap[student.class_id] ? (
                           <div className="flex items-center gap-1.5">
                             <GraduationCap className="size-4 text-muted-foreground" />
-                            {student.class_id}
-                            {student.section && `-${student.section}`}
+                            <span>{classesMap[student.class_id].name}</span>
+                            {classesMap[student.class_id].section && (
+                              <Badge variant="secondary" className="text-xs">
+                                {classesMap[student.class_id].section}
+                              </Badge>
+                            )}
                           </div>
+                        ) : student.class_id ? (
+                          <span className="text-muted-foreground text-sm">{student.class_id}</span>
                         ) : (
                           <span className="text-muted-foreground">—</span>
                         )}
