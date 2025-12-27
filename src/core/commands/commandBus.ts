@@ -187,6 +187,20 @@ async function executeCommandLogic<T>(
         afterState?: Record<string, unknown> 
       };
 
+    case 'evidence.create':
+      return await handleEvidenceCreate(command) as { 
+        result: CommandResult<T>; 
+        beforeState?: Record<string, unknown>; 
+        afterState?: Record<string, unknown> 
+      };
+
+    case 'evidence.update':
+      return await handleEvidenceUpdate(command) as { 
+        result: CommandResult<T>; 
+        beforeState?: Record<string, unknown>; 
+        afterState?: Record<string, unknown> 
+      };
+
     default:
       return {
         result: { success: true, data: command.payload as T },
@@ -718,6 +732,83 @@ async function handleAttendanceEdit(command: Command) {
       notes: payload.notes || null,
     })
     .eq('id', existing.id)
+    .select()
+    .single();
+
+  if (error) {
+    return { result: { success: false, error: error.message } };
+  }
+
+  return {
+    result: { success: true, data },
+    beforeState: existing as Record<string, unknown>,
+    afterState: data as Record<string, unknown>,
+  };
+}
+
+// Evidence handlers
+
+async function handleEvidenceCreate(command: Command) {
+  const payload = command.payload as {
+    name: string;
+    category: string;
+    description?: string | null;
+    due_date?: string | null;
+    total_items: number;
+    completed_items: number;
+    progress: number;
+    status: string;
+    created_by?: string;
+  };
+
+  const { data, error } = await supabase
+    .from('evidence_packs')
+    .insert([{
+      name: payload.name,
+      category: payload.category,
+      description: payload.description,
+      due_date: payload.due_date,
+      total_items: payload.total_items,
+      completed_items: payload.completed_items,
+      progress: payload.progress,
+      status: payload.status,
+      created_by: payload.created_by,
+    }])
+    .select()
+    .single();
+
+  if (error) {
+    return { result: { success: false, error: error.message } };
+  }
+
+  return {
+    result: { success: true, data },
+    afterState: data as Record<string, unknown>,
+  };
+}
+
+async function handleEvidenceUpdate(command: Command) {
+  if (!command.entityRef?.id) {
+    return { result: { success: false, error: 'Evidence pack ID is required' } };
+  }
+
+  // Get existing evidence pack
+  const { data: existing, error: fetchError } = await supabase
+    .from('evidence_packs')
+    .select('*')
+    .eq('id', command.entityRef.id)
+    .single();
+
+  if (fetchError || !existing) {
+    return { result: { success: false, error: fetchError?.message || 'Evidence pack not found' } };
+  }
+
+  const payload = command.payload as Record<string, unknown>;
+
+  const { data, error } = await supabase
+    .from('evidence_packs')
+    .update(payload)
+    .eq('id', command.entityRef.id)
     .select()
     .single();
 

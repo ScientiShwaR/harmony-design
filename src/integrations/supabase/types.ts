@@ -109,6 +109,110 @@ export type Database = {
         }
         Relationships: []
       }
+      evidence_items: {
+        Row: {
+          created_at: string
+          description: string | null
+          file_name: string | null
+          file_type: string | null
+          file_url: string | null
+          id: string
+          notes: string | null
+          pack_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          title: string
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          file_name?: string | null
+          file_type?: string | null
+          file_url?: string | null
+          id?: string
+          notes?: string | null
+          pack_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          file_name?: string | null
+          file_type?: string | null
+          file_url?: string | null
+          id?: string
+          notes?: string | null
+          pack_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evidence_items_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "evidence_packs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      evidence_packs: {
+        Row: {
+          category: string
+          completed_items: number
+          created_at: string
+          created_by: string | null
+          description: string | null
+          due_date: string | null
+          id: string
+          name: string
+          progress: number
+          status: string
+          total_items: number
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          completed_items?: number
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          name: string
+          progress?: number
+          status?: string
+          total_items?: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          completed_items?: number
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          name?: string
+          progress?: number
+          status?: string
+          total_items?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       policies: {
         Row: {
           created_at: string
