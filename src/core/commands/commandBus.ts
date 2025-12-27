@@ -131,9 +131,28 @@ async function executeCommandLogic<T>(
         afterState?: Record<string, unknown> 
       };
 
-    // Add more command handlers as needed
+    case 'student.create':
+      return await handleStudentCreate(command) as { 
+        result: CommandResult<T>; 
+        beforeState?: Record<string, unknown>; 
+        afterState?: Record<string, unknown> 
+      };
+
+    case 'student.update':
+      return await handleStudentUpdate(command) as { 
+        result: CommandResult<T>; 
+        beforeState?: Record<string, unknown>; 
+        afterState?: Record<string, unknown> 
+      };
+
+    case 'student.delete':
+      return await handleStudentDelete(command) as { 
+        result: CommandResult<T>; 
+        beforeState?: Record<string, unknown>; 
+        afterState?: Record<string, unknown> 
+      };
+
     default:
-      // Generic handler - log the command and return success
       return {
         result: { success: true, data: command.payload as T },
         afterState: command.payload,
@@ -246,6 +265,154 @@ async function handleUserRoleRemove(command: Command) {
   return {
     result: { success: true },
     beforeState: beforeData || { user_id, role },
+  };
+}
+
+// Student command handlers
+
+interface StudentPayload {
+  id?: string;
+  admission_number: string;
+  first_name: string;
+  last_name: string;
+  date_of_birth: string;
+  gender: string;
+  class_id?: string;
+  section?: string;
+  guardian_name: string;
+  guardian_phone: string;
+  guardian_email?: string;
+  address?: string;
+  blood_group?: string;
+  medical_notes?: string;
+  status?: string;
+  admission_date?: string;
+}
+
+async function handleStudentCreate(command: Command) {
+  const payload = command.payload as unknown as StudentPayload;
+
+  const { data, error } = await supabase
+    .from('students')
+    .insert({
+      admission_number: payload.admission_number,
+      first_name: payload.first_name,
+      last_name: payload.last_name,
+      date_of_birth: payload.date_of_birth,
+      gender: payload.gender,
+      class_id: payload.class_id || null,
+      section: payload.section || null,
+      guardian_name: payload.guardian_name,
+      guardian_phone: payload.guardian_phone,
+      guardian_email: payload.guardian_email || null,
+      address: payload.address || null,
+      blood_group: payload.blood_group || null,
+      medical_notes: payload.medical_notes || null,
+      status: payload.status || 'active',
+      admission_date: payload.admission_date || new Date().toISOString().split('T')[0],
+      created_by: command.actorId,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    if (error.code === '23505') {
+      return { result: { success: false, error: 'A student with this admission number already exists' } };
+    }
+    return { result: { success: false, error: error.message } };
+  }
+
+  return {
+    result: { success: true, data },
+    afterState: data as Record<string, unknown>,
+  };
+}
+
+async function handleStudentUpdate(command: Command) {
+  const payload = command.payload as unknown as StudentPayload;
+  const studentId = command.entityRef?.id || payload.id;
+
+  if (!studentId) {
+    return { result: { success: false, error: 'Student ID is required' } };
+  }
+
+  // Get before state
+  const { data: beforeData } = await supabase
+    .from('students')
+    .select('*')
+    .eq('id', studentId)
+    .maybeSingle();
+
+  if (!beforeData) {
+    return { result: { success: false, error: 'Student not found' } };
+  }
+
+  const { data, error } = await supabase
+    .from('students')
+    .update({
+      admission_number: payload.admission_number,
+      first_name: payload.first_name,
+      last_name: payload.last_name,
+      date_of_birth: payload.date_of_birth,
+      gender: payload.gender,
+      class_id: payload.class_id || null,
+      section: payload.section || null,
+      guardian_name: payload.guardian_name,
+      guardian_phone: payload.guardian_phone,
+      guardian_email: payload.guardian_email || null,
+      address: payload.address || null,
+      blood_group: payload.blood_group || null,
+      medical_notes: payload.medical_notes || null,
+      status: payload.status || 'active',
+    })
+    .eq('id', studentId)
+    .select()
+    .single();
+
+  if (error) {
+    if (error.code === '23505') {
+      return { result: { success: false, error: 'A student with this admission number already exists' } };
+    }
+    return { result: { success: false, error: error.message } };
+  }
+
+  return {
+    result: { success: true, data },
+    beforeState: beforeData as Record<string, unknown>,
+    afterState: data as Record<string, unknown>,
+  };
+}
+
+async function handleStudentDelete(command: Command) {
+  const studentId = command.entityRef?.id || (command.payload as { id: string }).id;
+
+  if (!studentId) {
+    return { result: { success: false, error: 'Student ID is required' } };
+  }
+
+  // Get before state
+  const { data: beforeData } = await supabase
+    .from('students')
+    .select('*')
+    .eq('id', studentId)
+    .maybeSingle();
+
+  if (!beforeData) {
+    return { result: { success: false, error: 'Student not found' } };
+  }
+
+  const { error } = await supabase
+    .from('students')
+    .delete()
+    .eq('id', studentId);
+
+  if (error) {
+    return { result: { success: false, error: error.message } };
+  }
+
+  return {
+    result: { success: true },
+    beforeState: beforeData as Record<string, unknown>,
   };
 }
 
