@@ -14,6 +14,7 @@ import StudentsPage from "./pages/people/Students";
 import StaffPage from "./pages/people/Staff";
 import AttendancePage from "./pages/academics/Attendance";
 import ClassesPage from "./pages/academics/Classes";
+import TimetablePage from "./pages/academics/Timetable";
 import EvidenceVaultPage from "./pages/compliance/EvidenceVault";
 import UsersPage from "./pages/settings/Users";
 import RolesPage from "./pages/settings/Roles";
@@ -50,7 +51,7 @@ const App = () => (
             {/* Academics */}
             <Route path="/academics/attendance" element={<ProtectedRoute permission="attendance.read"><AttendancePage /></ProtectedRoute>} />
             <Route path="/academics/classes" element={<ProtectedRoute permission="students.read"><ClassesPage /></ProtectedRoute>} />
-            <Route path="/academics/timetable" element={<ProtectedRoute><WorkPage /></ProtectedRoute>} />
+            <Route path="/academics/timetable" element={<ProtectedRoute permission="students.read"><TimetablePage /></ProtectedRoute>} />
             <Route path="/academics/assessments" element={<ProtectedRoute><WorkPage /></ProtectedRoute>} />
             <Route path="/academics/report-cards" element={<ProtectedRoute><WorkPage /></ProtectedRoute>} />
             <Route path="/academics/certificates" element={<ProtectedRoute><WorkPage /></ProtectedRoute>} />
