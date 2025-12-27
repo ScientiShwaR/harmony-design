@@ -165,6 +165,115 @@ export type Database = {
         }
         Relationships: []
       }
+      certificate_templates: {
+        Row: {
+          body_template: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          footer_text: string | null
+          header_text: string
+          id: string
+          is_active: boolean
+          name: string
+          template_type: string
+          updated_at: string
+        }
+        Insert: {
+          body_template?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          footer_text?: string | null
+          header_text?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          template_type?: string
+          updated_at?: string
+        }
+        Update: {
+          body_template?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          footer_text?: string | null
+          header_text?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          template_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      certificates: {
+        Row: {
+          achievement_text: string | null
+          certificate_number: string
+          class_id: string | null
+          created_at: string
+          custom_fields: Json | null
+          id: string
+          issued_by: string | null
+          issued_date: string
+          status: string
+          student_id: string
+          template_id: string
+          updated_at: string
+        }
+        Insert: {
+          achievement_text?: string | null
+          certificate_number: string
+          class_id?: string | null
+          created_at?: string
+          custom_fields?: Json | null
+          id?: string
+          issued_by?: string | null
+          issued_date?: string
+          status?: string
+          student_id: string
+          template_id: string
+          updated_at?: string
+        }
+        Update: {
+          achievement_text?: string | null
+          certificate_number?: string
+          class_id?: string | null
+          created_at?: string
+          custom_fields?: Json | null
+          id?: string
+          issued_by?: string | null
+          issued_date?: string
+          status?: string
+          student_id?: string
+          template_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificates_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificates_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificates_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "certificate_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       classes: {
         Row: {
           academic_year: string
