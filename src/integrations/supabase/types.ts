@@ -14,6 +14,62 @@ export type Database = {
   }
   public: {
     Tables: {
+      assessments: {
+        Row: {
+          assessment_date: string | null
+          assessment_type: string
+          class_id: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          max_marks: number
+          name: string
+          passing_marks: number
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          assessment_date?: string | null
+          assessment_type?: string
+          class_id: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          max_marks?: number
+          name: string
+          passing_marks?: number
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          assessment_date?: string | null
+          assessment_type?: string
+          class_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          max_marks?: number
+          name?: string
+          passing_marks?: number
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessments_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       attendance: {
         Row: {
           check_in_time: string | null
@@ -453,6 +509,60 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      student_grades: {
+        Row: {
+          assessment_id: string
+          created_at: string
+          grade: string | null
+          graded_at: string | null
+          graded_by: string | null
+          id: string
+          marks_obtained: number | null
+          remarks: string | null
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          assessment_id: string
+          created_at?: string
+          grade?: string | null
+          graded_at?: string | null
+          graded_by?: string | null
+          id?: string
+          marks_obtained?: number | null
+          remarks?: string | null
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          assessment_id?: string
+          created_at?: string
+          grade?: string | null
+          graded_at?: string | null
+          graded_by?: string | null
+          id?: string
+          marks_obtained?: number | null
+          remarks?: string | null
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_grades_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "assessments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_grades_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       students: {
         Row: {
