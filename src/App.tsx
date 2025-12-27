@@ -11,6 +11,7 @@ import LoginPage from "./pages/Login";
 import HomePage from "./pages/Home";
 import WorkPage from "./pages/work/Work";
 import StudentsPage from "./pages/people/Students";
+import StaffPage from "./pages/people/Staff";
 import AttendancePage from "./pages/academics/Attendance";
 import EvidenceVaultPage from "./pages/compliance/EvidenceVault";
 import UsersPage from "./pages/settings/Users";
@@ -43,7 +44,7 @@ const App = () => (
             
             {/* People */}
             <Route path="/people/students" element={<ProtectedRoute permission="students.read"><StudentsPage /></ProtectedRoute>} />
-            <Route path="/people/staff" element={<ProtectedRoute permission="staff.read"><StudentsPage /></ProtectedRoute>} />
+            <Route path="/people/staff" element={<ProtectedRoute permission="staff.read"><StaffPage /></ProtectedRoute>} />
             
             {/* Academics */}
             <Route path="/academics/attendance" element={<ProtectedRoute permission="attendance.read"><AttendancePage /></ProtectedRoute>} />
