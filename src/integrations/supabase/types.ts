@@ -109,6 +109,59 @@ export type Database = {
         }
         Relationships: []
       }
+      classes: {
+        Row: {
+          academic_year: string
+          capacity: number | null
+          class_teacher_id: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          room_number: string | null
+          section: string | null
+          updated_at: string
+        }
+        Insert: {
+          academic_year: string
+          capacity?: number | null
+          class_teacher_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          room_number?: string | null
+          section?: string | null
+          updated_at?: string
+        }
+        Update: {
+          academic_year?: string
+          capacity?: number | null
+          class_teacher_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          room_number?: string | null
+          section?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "classes_class_teacher_id_fkey"
+            columns: ["class_teacher_id"]
+            isOneToOne: false
+            referencedRelation: "staff"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       evidence_items: {
         Row: {
           created_at: string
