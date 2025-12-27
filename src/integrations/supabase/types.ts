@@ -520,6 +520,66 @@ export type Database = {
         }
         Relationships: []
       }
+      timetable_slots: {
+        Row: {
+          class_id: string
+          created_at: string
+          created_by: string | null
+          day_of_week: number
+          end_time: string
+          id: string
+          is_active: boolean
+          room_number: string | null
+          start_time: string
+          subject: string
+          teacher_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          class_id: string
+          created_at?: string
+          created_by?: string | null
+          day_of_week: number
+          end_time: string
+          id?: string
+          is_active?: boolean
+          room_number?: string | null
+          start_time: string
+          subject: string
+          teacher_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          class_id?: string
+          created_at?: string
+          created_by?: string | null
+          day_of_week?: number
+          end_time?: string
+          id?: string
+          is_active?: boolean
+          room_number?: string | null
+          start_time?: string
+          subject?: string
+          teacher_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "timetable_slots_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "timetable_slots_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "staff"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           assigned_at: string
