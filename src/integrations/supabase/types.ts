@@ -175,6 +175,72 @@ export type Database = {
         }
         Relationships: []
       }
+      students: {
+        Row: {
+          address: string | null
+          admission_date: string
+          admission_number: string
+          blood_group: string | null
+          class_id: string | null
+          created_at: string
+          created_by: string | null
+          date_of_birth: string
+          first_name: string
+          gender: string
+          guardian_email: string | null
+          guardian_name: string
+          guardian_phone: string
+          id: string
+          last_name: string
+          medical_notes: string | null
+          section: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          admission_date?: string
+          admission_number: string
+          blood_group?: string | null
+          class_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_of_birth: string
+          first_name: string
+          gender: string
+          guardian_email?: string | null
+          guardian_name: string
+          guardian_phone: string
+          id?: string
+          last_name: string
+          medical_notes?: string | null
+          section?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          admission_date?: string
+          admission_number?: string
+          blood_group?: string | null
+          class_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_of_birth?: string
+          first_name?: string
+          gender?: string
+          guardian_email?: string | null
+          guardian_name?: string
+          guardian_phone?: string
+          id?: string
+          last_name?: string
+          medical_notes?: string | null
+          section?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           assigned_at: string
