@@ -173,6 +173,20 @@ async function executeCommandLogic<T>(
         afterState?: Record<string, unknown> 
       };
 
+    case 'attendance.mark':
+      return await handleAttendanceMark(command) as { 
+        result: CommandResult<T>; 
+        beforeState?: Record<string, unknown>; 
+        afterState?: Record<string, unknown> 
+      };
+
+    case 'attendance.edit':
+      return await handleAttendanceEdit(command) as { 
+        result: CommandResult<T>; 
+        beforeState?: Record<string, unknown>; 
+        afterState?: Record<string, unknown> 
+      };
+
     default:
       return {
         result: { success: true, data: command.payload as T },
@@ -586,6 +600,135 @@ async function handleStaffDelete(command: Command) {
   return {
     result: { success: true },
     beforeState: beforeData as Record<string, unknown>,
+  };
+}
+
+// Attendance command handlers
+
+interface AttendancePayload {
+  student_id: string;
+  date: string;
+  status: 'present' | 'absent' | 'late' | 'excused';
+  check_in_time?: string;
+  check_out_time?: string;
+  notes?: string;
+}
+
+interface BulkAttendancePayload {
+  date: string;
+  records: Array<{
+    student_id: string;
+    status: 'present' | 'absent' | 'late' | 'excused';
+    notes?: string;
+  }>;
+}
+
+async function handleAttendanceMark(command: Command) {
+  const payload = command.payload as unknown as BulkAttendancePayload;
+
+  // Insert or update attendance records
+  const results = [];
+  const errors = [];
+
+  for (const record of payload.records) {
+    // Check if record already exists
+    const { data: existing } = await supabase
+      .from('attendance')
+      .select('id')
+      .eq('student_id', record.student_id)
+      .eq('date', payload.date)
+      .maybeSingle();
+
+    if (existing) {
+      // Update existing record
+      const { data, error } = await supabase
+        .from('attendance')
+        .update({
+          status: record.status,
+          notes: record.notes || null,
+        })
+        .eq('id', existing.id)
+        .select()
+        .single();
+
+      if (error) {
+        errors.push({ student_id: record.student_id, error: error.message });
+      } else {
+        results.push(data);
+      }
+    } else {
+      // Insert new record
+      const { data, error } = await supabase
+        .from('attendance')
+        .insert({
+          student_id: record.student_id,
+          date: payload.date,
+          status: record.status,
+          notes: record.notes || null,
+          marked_by: command.actorId,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        errors.push({ student_id: record.student_id, error: error.message });
+      } else {
+        results.push(data);
+      }
+    }
+  }
+
+  if (errors.length > 0) {
+    return {
+      result: { 
+        success: false, 
+        error: `Failed to mark attendance for ${errors.length} student(s)`,
+        data: { results, errors } as unknown
+      },
+    };
+  }
+
+  return {
+    result: { success: true, data: results },
+    afterState: { date: payload.date, count: results.length } as Record<string, unknown>,
+  };
+}
+
+async function handleAttendanceEdit(command: Command) {
+  const payload = command.payload as unknown as AttendancePayload & { id?: string };
+  
+  // Find the attendance record
+  const { data: existing } = await supabase
+    .from('attendance')
+    .select('*')
+    .eq('student_id', payload.student_id)
+    .eq('date', payload.date)
+    .maybeSingle();
+
+  if (!existing) {
+    return { result: { success: false, error: 'Attendance record not found' } };
+  }
+
+  const { data, error } = await supabase
+    .from('attendance')
+    .update({
+      status: payload.status,
+      check_in_time: payload.check_in_time || null,
+      check_out_time: payload.check_out_time || null,
+      notes: payload.notes || null,
+    })
+    .eq('id', existing.id)
+    .select()
+    .single();
+
+  if (error) {
+    return { result: { success: false, error: error.message } };
+  }
+
+  return {
+    result: { success: true, data },
+    beforeState: existing as Record<string, unknown>,
+    afterState: data as Record<string, unknown>,
   };
 }
 
