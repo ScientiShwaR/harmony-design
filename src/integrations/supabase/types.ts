@@ -382,6 +382,138 @@ export type Database = {
         }
         Relationships: []
       }
+      report_card_subjects: {
+        Row: {
+          created_at: string
+          grade: string | null
+          id: string
+          max_marks: number
+          obtained_marks: number | null
+          remarks: string | null
+          report_card_id: string
+          subject: string
+          teacher_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          grade?: string | null
+          id?: string
+          max_marks: number
+          obtained_marks?: number | null
+          remarks?: string | null
+          report_card_id: string
+          subject: string
+          teacher_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          grade?: string | null
+          id?: string
+          max_marks?: number
+          obtained_marks?: number | null
+          remarks?: string | null
+          report_card_id?: string
+          subject?: string
+          teacher_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_card_subjects_report_card_id_fkey"
+            columns: ["report_card_id"]
+            isOneToOne: false
+            referencedRelation: "report_cards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "report_card_subjects_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "staff"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      report_cards: {
+        Row: {
+          academic_year: string
+          attendance_percentage: number | null
+          class_id: string
+          created_at: string
+          created_by: string | null
+          generated_at: string | null
+          grade: string | null
+          id: string
+          obtained_marks: number | null
+          percentage: number | null
+          principal_remarks: string | null
+          published_at: string | null
+          rank: number | null
+          status: string
+          student_id: string
+          teacher_remarks: string | null
+          term: string
+          total_marks: number | null
+          updated_at: string
+        }
+        Insert: {
+          academic_year: string
+          attendance_percentage?: number | null
+          class_id: string
+          created_at?: string
+          created_by?: string | null
+          generated_at?: string | null
+          grade?: string | null
+          id?: string
+          obtained_marks?: number | null
+          percentage?: number | null
+          principal_remarks?: string | null
+          published_at?: string | null
+          rank?: number | null
+          status?: string
+          student_id: string
+          teacher_remarks?: string | null
+          term: string
+          total_marks?: number | null
+          updated_at?: string
+        }
+        Update: {
+          academic_year?: string
+          attendance_percentage?: number | null
+          class_id?: string
+          created_at?: string
+          created_by?: string | null
+          generated_at?: string | null
+          grade?: string | null
+          id?: string
+          obtained_marks?: number | null
+          percentage?: number | null
+          principal_remarks?: string | null
+          published_at?: string | null
+          rank?: number | null
+          status?: string
+          student_id?: string
+          teacher_remarks?: string | null
+          term?: string
+          total_marks?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_cards_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "report_cards_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       role_permissions: {
         Row: {
           created_at: string
