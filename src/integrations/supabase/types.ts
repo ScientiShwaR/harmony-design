@@ -175,6 +175,81 @@ export type Database = {
         }
         Relationships: []
       }
+      staff: {
+        Row: {
+          address: string | null
+          blood_group: string | null
+          created_at: string
+          created_by: string | null
+          date_of_birth: string | null
+          department: string | null
+          designation: string
+          email: string
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          employee_id: string
+          experience_years: number | null
+          first_name: string
+          gender: string | null
+          id: string
+          join_date: string
+          last_name: string
+          phone: string
+          qualification: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          address?: string | null
+          blood_group?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_of_birth?: string | null
+          department?: string | null
+          designation: string
+          email: string
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          employee_id: string
+          experience_years?: number | null
+          first_name: string
+          gender?: string | null
+          id?: string
+          join_date?: string
+          last_name: string
+          phone: string
+          qualification?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          address?: string | null
+          blood_group?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_of_birth?: string | null
+          department?: string | null
+          designation?: string
+          email?: string
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          employee_id?: string
+          experience_years?: number | null
+          first_name?: string
+          gender?: string | null
+          id?: string
+          join_date?: string
+          last_name?: string
+          phone?: string
+          qualification?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       students: {
         Row: {
           address: string | null

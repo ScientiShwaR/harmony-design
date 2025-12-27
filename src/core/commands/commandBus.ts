@@ -152,6 +152,27 @@ async function executeCommandLogic<T>(
         afterState?: Record<string, unknown> 
       };
 
+    case 'staff.create':
+      return await handleStaffCreate(command) as { 
+        result: CommandResult<T>; 
+        beforeState?: Record<string, unknown>; 
+        afterState?: Record<string, unknown> 
+      };
+
+    case 'staff.update':
+      return await handleStaffUpdate(command) as { 
+        result: CommandResult<T>; 
+        beforeState?: Record<string, unknown>; 
+        afterState?: Record<string, unknown> 
+      };
+
+    case 'staff.delete':
+      return await handleStaffDelete(command) as { 
+        result: CommandResult<T>; 
+        beforeState?: Record<string, unknown>; 
+        afterState?: Record<string, unknown> 
+      };
+
     default:
       return {
         result: { success: true, data: command.payload as T },
@@ -405,6 +426,158 @@ async function handleStudentDelete(command: Command) {
     .from('students')
     .delete()
     .eq('id', studentId);
+
+  if (error) {
+    return { result: { success: false, error: error.message } };
+  }
+
+  return {
+    result: { success: true },
+    beforeState: beforeData as Record<string, unknown>,
+  };
+}
+
+// Staff command handlers
+
+interface StaffPayload {
+  id?: string;
+  employee_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  date_of_birth?: string;
+  gender?: string;
+  designation: string;
+  department?: string;
+  qualification?: string;
+  experience_years?: number;
+  join_date?: string;
+  address?: string;
+  emergency_contact_name?: string;
+  emergency_contact_phone?: string;
+  blood_group?: string;
+  status?: string;
+}
+
+async function handleStaffCreate(command: Command) {
+  const payload = command.payload as unknown as StaffPayload;
+
+  const { data, error } = await supabase
+    .from('staff')
+    .insert({
+      employee_id: payload.employee_id,
+      first_name: payload.first_name,
+      last_name: payload.last_name,
+      email: payload.email,
+      phone: payload.phone,
+      date_of_birth: payload.date_of_birth || null,
+      gender: payload.gender || null,
+      designation: payload.designation,
+      department: payload.department || null,
+      qualification: payload.qualification || null,
+      experience_years: payload.experience_years || 0,
+      join_date: payload.join_date || new Date().toISOString().split('T')[0],
+      address: payload.address || null,
+      emergency_contact_name: payload.emergency_contact_name || null,
+      emergency_contact_phone: payload.emergency_contact_phone || null,
+      blood_group: payload.blood_group || null,
+      status: payload.status || 'active',
+      created_by: command.actorId,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    if (error.code === '23505') {
+      return { result: { success: false, error: 'A staff member with this employee ID or email already exists' } };
+    }
+    return { result: { success: false, error: error.message } };
+  }
+
+  return {
+    result: { success: true, data },
+    afterState: data as Record<string, unknown>,
+  };
+}
+
+async function handleStaffUpdate(command: Command) {
+  const payload = command.payload as unknown as StaffPayload;
+  const staffId = command.entityRef?.id || payload.id;
+
+  if (!staffId) {
+    return { result: { success: false, error: 'Staff ID is required' } };
+  }
+
+  const { data: beforeData } = await supabase
+    .from('staff')
+    .select('*')
+    .eq('id', staffId)
+    .maybeSingle();
+
+  if (!beforeData) {
+    return { result: { success: false, error: 'Staff member not found' } };
+  }
+
+  const { data, error } = await supabase
+    .from('staff')
+    .update({
+      employee_id: payload.employee_id,
+      first_name: payload.first_name,
+      last_name: payload.last_name,
+      email: payload.email,
+      phone: payload.phone,
+      date_of_birth: payload.date_of_birth || null,
+      gender: payload.gender || null,
+      designation: payload.designation,
+      department: payload.department || null,
+      qualification: payload.qualification || null,
+      experience_years: payload.experience_years || 0,
+      address: payload.address || null,
+      emergency_contact_name: payload.emergency_contact_name || null,
+      emergency_contact_phone: payload.emergency_contact_phone || null,
+      blood_group: payload.blood_group || null,
+      status: payload.status || 'active',
+    })
+    .eq('id', staffId)
+    .select()
+    .single();
+
+  if (error) {
+    if (error.code === '23505') {
+      return { result: { success: false, error: 'A staff member with this employee ID or email already exists' } };
+    }
+    return { result: { success: false, error: error.message } };
+  }
+
+  return {
+    result: { success: true, data },
+    beforeState: beforeData as Record<string, unknown>,
+    afterState: data as Record<string, unknown>,
+  };
+}
+
+async function handleStaffDelete(command: Command) {
+  const staffId = command.entityRef?.id || (command.payload as { id: string }).id;
+
+  if (!staffId) {
+    return { result: { success: false, error: 'Staff ID is required' } };
+  }
+
+  const { data: beforeData } = await supabase
+    .from('staff')
+    .select('*')
+    .eq('id', staffId)
+    .maybeSingle();
+
+  if (!beforeData) {
+    return { result: { success: false, error: 'Staff member not found' } };
+  }
+
+  const { error } = await supabase
+    .from('staff')
+    .delete()
+    .eq('id', staffId);
 
   if (error) {
     return { result: { success: false, error: error.message } };
