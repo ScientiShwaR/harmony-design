@@ -13,6 +13,7 @@ import WorkPage from "./pages/work/Work";
 import StudentsPage from "./pages/people/Students";
 import StaffPage from "./pages/people/Staff";
 import AttendancePage from "./pages/academics/Attendance";
+import ClassesPage from "./pages/academics/Classes";
 import EvidenceVaultPage from "./pages/compliance/EvidenceVault";
 import UsersPage from "./pages/settings/Users";
 import RolesPage from "./pages/settings/Roles";
@@ -48,11 +49,11 @@ const App = () => (
             
             {/* Academics */}
             <Route path="/academics/attendance" element={<ProtectedRoute permission="attendance.read"><AttendancePage /></ProtectedRoute>} />
-            <Route path="/academics/classes" element={<ProtectedRoute><AttendancePage /></ProtectedRoute>} />
-            <Route path="/academics/timetable" element={<ProtectedRoute><AttendancePage /></ProtectedRoute>} />
-            <Route path="/academics/assessments" element={<ProtectedRoute><AttendancePage /></ProtectedRoute>} />
-            <Route path="/academics/report-cards" element={<ProtectedRoute><AttendancePage /></ProtectedRoute>} />
-            <Route path="/academics/certificates" element={<ProtectedRoute><AttendancePage /></ProtectedRoute>} />
+            <Route path="/academics/classes" element={<ProtectedRoute permission="students.read"><ClassesPage /></ProtectedRoute>} />
+            <Route path="/academics/timetable" element={<ProtectedRoute><WorkPage /></ProtectedRoute>} />
+            <Route path="/academics/assessments" element={<ProtectedRoute><WorkPage /></ProtectedRoute>} />
+            <Route path="/academics/report-cards" element={<ProtectedRoute><WorkPage /></ProtectedRoute>} />
+            <Route path="/academics/certificates" element={<ProtectedRoute><WorkPage /></ProtectedRoute>} />
             
             {/* Finance */}
             <Route path="/finance/procurement" element={<ProtectedRoute><WorkPage /></ProtectedRoute>} />
