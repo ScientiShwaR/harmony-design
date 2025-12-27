@@ -292,14 +292,17 @@ export function StudentFormDialog({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Blood Group</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value || ''}>
+                    <Select 
+                      onValueChange={(val) => field.onChange(val === "_none" ? "" : val)} 
+                      value={field.value || "_none"}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="">Not specified</SelectItem>
+                        <SelectItem value="_none">Not specified</SelectItem>
                         {BLOOD_GROUPS.map((bg) => (
                           <SelectItem key={bg} value={bg}>
                             {bg}
@@ -321,14 +324,17 @@ export function StudentFormDialog({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Class</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value || ''}>
+                    <Select 
+                      onValueChange={(val) => field.onChange(val === "_none" ? "" : val)} 
+                      value={field.value || "_none"}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select class" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="">No class assigned</SelectItem>
+                        <SelectItem value="_none">No class assigned</SelectItem>
                         {classes.map((c) => (
                           <SelectItem key={c.id} value={c.id}>
                             {c.name}{c.section ? ` - ${c.section}` : ''}
@@ -346,14 +352,17 @@ export function StudentFormDialog({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Section (Legacy)</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value || ''}>
+                    <Select 
+                      onValueChange={(val) => field.onChange(val === "_none" ? "" : val)} 
+                      value={field.value || "_none"}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select section" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="">No section</SelectItem>
+                        <SelectItem value="_none">No section</SelectItem>
                         {['A', 'B', 'C', 'D'].map((s) => (
                           <SelectItem key={s} value={s}>
                             Section {s}
