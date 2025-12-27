@@ -23,7 +23,12 @@ import {
   Search,
   Clock,
   Star,
+  Shield,
+  ScrollText,
+  UserCog,
 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import type { Permission } from "@/core/rbac/permissions";
 
 interface SpotlightSearchProps {
   open: boolean;
@@ -37,11 +42,22 @@ interface SearchItem {
   icon: React.ComponentType<{ className?: string }>;
   type: "navigation" | "command" | "record" | "recent";
   action: () => void;
+  permission?: Permission; // Optional permission required to see this item
 }
 
 export function SpotlightSearch({ open, onOpenChange }: SpotlightSearchProps) {
   const navigate = useNavigate();
   const [search, setSearch] = React.useState("");
+  const { hasPermission, isAdmin } = useAuth();
+
+  // Filter items based on permissions
+  const filterByPermission = (items: SearchItem[]) => {
+    return items.filter(item => {
+      if (!item.permission) return true; // No permission required
+      if (isAdmin) return true; // Admins see everything
+      return hasPermission(item.permission);
+    });
+  };
 
   // Mock data - in real app, this would come from search index
   const recentItems: SearchItem[] = [
@@ -52,6 +68,7 @@ export function SpotlightSearch({ open, onOpenChange }: SpotlightSearchProps) {
       icon: Users,
       type: "recent",
       action: () => navigate("/people/students/1"),
+      permission: "students.read",
     },
     {
       id: "recent-2",
@@ -60,6 +77,7 @@ export function SpotlightSearch({ open, onOpenChange }: SpotlightSearchProps) {
       icon: CalendarCheck,
       type: "recent",
       action: () => navigate("/academics/attendance"),
+      permission: "attendance.read",
     },
   ];
 
@@ -79,6 +97,7 @@ export function SpotlightSearch({ open, onOpenChange }: SpotlightSearchProps) {
       icon: Users,
       type: "navigation",
       action: () => navigate("/people/students"),
+      permission: "students.read",
     },
     {
       id: "nav-attendance",
@@ -87,6 +106,7 @@ export function SpotlightSearch({ open, onOpenChange }: SpotlightSearchProps) {
       icon: CalendarCheck,
       type: "navigation",
       action: () => navigate("/academics/attendance"),
+      permission: "attendance.read",
     },
     {
       id: "nav-evidence",
@@ -95,6 +115,7 @@ export function SpotlightSearch({ open, onOpenChange }: SpotlightSearchProps) {
       icon: FileCheck,
       type: "navigation",
       action: () => navigate("/compliance/evidence"),
+      permission: "evidence.read",
     },
     {
       id: "nav-exceptions",
@@ -103,6 +124,42 @@ export function SpotlightSearch({ open, onOpenChange }: SpotlightSearchProps) {
       icon: AlertTriangle,
       type: "navigation",
       action: () => navigate("/work/exceptions"),
+    },
+    {
+      id: "nav-users",
+      title: "Users",
+      subtitle: "Settings → Users",
+      icon: UserCog,
+      type: "navigation",
+      action: () => navigate("/settings/users"),
+      permission: "users.read",
+    },
+    {
+      id: "nav-roles",
+      title: "Roles",
+      subtitle: "Settings → Roles",
+      icon: Shield,
+      type: "navigation",
+      action: () => navigate("/settings/roles"),
+      permission: "roles.read",
+    },
+    {
+      id: "nav-policies",
+      title: "Policies",
+      subtitle: "Settings → Policies",
+      icon: ScrollText,
+      type: "navigation",
+      action: () => navigate("/settings/policies"),
+      permission: "policies.read",
+    },
+    {
+      id: "nav-audit",
+      title: "Audit Log",
+      subtitle: "Settings → Audit Log",
+      icon: ClipboardList,
+      type: "navigation",
+      action: () => navigate("/settings/audit-log"),
+      permission: "audit.read",
     },
   ];
 
@@ -117,6 +174,7 @@ export function SpotlightSearch({ open, onOpenChange }: SpotlightSearchProps) {
         navigate("/people/students?action=new");
         onOpenChange(false);
       },
+      permission: "students.write",
     },
     {
       id: "cmd-mark-attendance",
@@ -128,19 +186,26 @@ export function SpotlightSearch({ open, onOpenChange }: SpotlightSearchProps) {
         navigate("/academics/attendance?action=mark");
         onOpenChange(false);
       },
+      permission: "attendance.mark",
     },
     {
-      id: "cmd-new-certificate",
-      title: "Issue Certificate",
-      subtitle: "Generate a new certificate",
-      icon: FileText,
+      id: "cmd-upload-evidence",
+      title: "Upload Evidence",
+      subtitle: "Add compliance evidence",
+      icon: FileCheck,
       type: "command",
       action: () => {
-        navigate("/academics/certificates?action=new");
+        navigate("/compliance/evidence?action=upload");
         onOpenChange(false);
       },
+      permission: "evidence.write",
     },
   ];
+
+  // Apply permission filtering
+  const filteredRecentItems = filterByPermission(recentItems);
+  const filteredNavigationItems = filterByPermission(navigationItems);
+  const filteredCommandItems = filterByPermission(commandItems);
 
   const handleSelect = (item: SearchItem) => {
     item.action();
@@ -177,9 +242,9 @@ export function SpotlightSearch({ open, onOpenChange }: SpotlightSearchProps) {
           </div>
         </CommandEmpty>
 
-        {!search && (
+        {!search && filteredRecentItems.length > 0 && (
           <CommandGroup heading="Recent">
-            {recentItems.map((item) => (
+            {filteredRecentItems.map((item) => (
               <CommandItem
                 key={item.id}
                 onSelect={() => handleSelect(item)}
@@ -200,49 +265,55 @@ export function SpotlightSearch({ open, onOpenChange }: SpotlightSearchProps) {
           </CommandGroup>
         )}
 
-        <CommandSeparator />
+        {filteredCommandItems.length > 0 && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="Quick Actions">
+              {filteredCommandItems.map((item) => (
+                <CommandItem
+                  key={item.id}
+                  onSelect={() => handleSelect(item)}
+                  className="gap-3"
+                >
+                  <div className="flex size-8 items-center justify-center rounded-md bg-accent/10">
+                    <item.icon className="size-4 text-accent" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span>{item.title}</span>
+                    {item.subtitle && (
+                      <span className="text-xs text-muted-foreground">{item.subtitle}</span>
+                    )}
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
 
-        <CommandGroup heading="Quick Actions">
-          {commandItems.map((item) => (
-            <CommandItem
-              key={item.id}
-              onSelect={() => handleSelect(item)}
-              className="gap-3"
-            >
-              <div className="flex size-8 items-center justify-center rounded-md bg-accent/10">
-                <item.icon className="size-4 text-accent" />
-              </div>
-              <div className="flex flex-col">
-                <span>{item.title}</span>
-                {item.subtitle && (
-                  <span className="text-xs text-muted-foreground">{item.subtitle}</span>
-                )}
-              </div>
-            </CommandItem>
-          ))}
-        </CommandGroup>
-
-        <CommandSeparator />
-
-        <CommandGroup heading="Go to">
-          {navigationItems.map((item) => (
-            <CommandItem
-              key={item.id}
-              onSelect={() => handleSelect(item)}
-              className="gap-3"
-            >
-              <div className="flex size-8 items-center justify-center rounded-md bg-muted">
-                <item.icon className="size-4 text-muted-foreground" />
-              </div>
-              <div className="flex flex-col">
-                <span>{item.title}</span>
-                {item.subtitle && (
-                  <span className="text-xs text-muted-foreground">{item.subtitle}</span>
-                )}
-              </div>
-            </CommandItem>
-          ))}
-        </CommandGroup>
+        {filteredNavigationItems.length > 0 && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="Go to">
+              {filteredNavigationItems.map((item) => (
+                <CommandItem
+                  key={item.id}
+                  onSelect={() => handleSelect(item)}
+                  className="gap-3"
+                >
+                  <div className="flex size-8 items-center justify-center rounded-md bg-muted">
+                    <item.icon className="size-4 text-muted-foreground" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span>{item.title}</span>
+                    {item.subtitle && (
+                      <span className="text-xs text-muted-foreground">{item.subtitle}</span>
+                    )}
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
       </CommandList>
     </CommandDialog>
   );
