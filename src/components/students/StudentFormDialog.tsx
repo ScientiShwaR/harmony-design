@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import {
   Dialog,
   DialogContent,
@@ -68,6 +70,12 @@ interface Student {
   admission_date: string;
 }
 
+interface ClassOption {
+  id: string;
+  name: string;
+  section: string | null;
+}
+
 interface StudentFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -77,8 +85,6 @@ interface StudentFormDialogProps {
 }
 
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-const CLASS_OPTIONS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
-const SECTION_OPTIONS = ['A', 'B', 'C', 'D'];
 
 export function StudentFormDialog({
   open,
@@ -88,6 +94,22 @@ export function StudentFormDialog({
   isLoading = false,
 }: StudentFormDialogProps) {
   const isEditing = !!student;
+
+  // Fetch classes from database
+  const { data: classes = [] } = useQuery({
+    queryKey: ['classes-options'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('classes')
+        .select('id, name, section')
+        .eq('is_active', true)
+        .order('name');
+
+      if (error) throw error;
+      return data as ClassOption[];
+    },
+    enabled: open,
+  });
 
   const form = useForm<StudentFormData>({
     resolver: zodResolver(studentSchema),
@@ -153,6 +175,13 @@ export function StudentFormDialog({
   const handleSubmit = async (data: StudentFormData) => {
     await onSubmit(data);
   };
+
+  // Get unique sections from selected class or all classes
+  const selectedClassId = form.watch('class_id');
+  const selectedClass = classes.find(c => c.id === selectedClassId);
+  const availableSections = selectedClass?.section 
+    ? [selectedClass.section] 
+    : [...new Set(classes.filter(c => c.section).map(c => c.section!))];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -270,6 +299,7 @@ export function StudentFormDialog({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
+                        <SelectItem value="">Not specified</SelectItem>
                         {BLOOD_GROUPS.map((bg) => (
                           <SelectItem key={bg} value={bg}>
                             {bg}
@@ -298,9 +328,10 @@ export function StudentFormDialog({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {CLASS_OPTIONS.map((c) => (
-                          <SelectItem key={c} value={c}>
-                            Class {c}
+                        <SelectItem value="">No class assigned</SelectItem>
+                        {classes.map((c) => (
+                          <SelectItem key={c.id} value={c.id}>
+                            {c.name}{c.section ? ` - ${c.section}` : ''}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -314,7 +345,7 @@ export function StudentFormDialog({
                 name="section"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Section</FormLabel>
+                    <FormLabel>Section (Legacy)</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value || ''}>
                       <FormControl>
                         <SelectTrigger>
@@ -322,7 +353,8 @@ export function StudentFormDialog({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {SECTION_OPTIONS.map((s) => (
+                        <SelectItem value="">No section</SelectItem>
+                        {['A', 'B', 'C', 'D'].map((s) => (
                           <SelectItem key={s} value={s}>
                             Section {s}
                           </SelectItem>
