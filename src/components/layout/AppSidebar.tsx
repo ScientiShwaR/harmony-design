@@ -9,7 +9,9 @@ import {
   ShieldCheck,
   Wrench,
   ChevronDown,
-  School
+  School,
+  History,
+  UserCog
 } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
 import {
@@ -32,13 +34,16 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import { usePermissionGate } from "@/core/rbac/PermissionGate";
+import type { Permission } from "@/core/rbac/permissions";
 
 interface NavItem {
   title: string;
   url: string;
   icon: React.ComponentType<{ className?: string }>;
-  children?: { title: string; url: string }[];
+  permission?: Permission;
+  children?: { title: string; url: string; permission?: Permission }[];
 }
 
 const navigation: { label: string; items: NavItem[] }[] = [
@@ -71,8 +76,8 @@ const navigation: { label: string; items: NavItem[] }[] = [
         url: "/people", 
         icon: Users,
         children: [
-          { title: "Students", url: "/people/students" },
-          { title: "Staff", url: "/people/staff" },
+          { title: "Students", url: "/people/students", permission: "students.read" },
+          { title: "Staff", url: "/people/staff", permission: "staff.read" },
         ]
       },
       { 
@@ -82,7 +87,7 @@ const navigation: { label: string; items: NavItem[] }[] = [
         children: [
           { title: "Classes", url: "/academics/classes" },
           { title: "Timetable", url: "/academics/timetable" },
-          { title: "Attendance", url: "/academics/attendance" },
+          { title: "Attendance", url: "/academics/attendance", permission: "attendance.read" },
           { title: "Assessments", url: "/academics/assessments" },
           { title: "Report Cards", url: "/academics/report-cards" },
           { title: "Certificates", url: "/academics/certificates" },
@@ -128,7 +133,7 @@ const navigation: { label: string; items: NavItem[] }[] = [
         url: "/compliance", 
         icon: ClipboardCheck,
         children: [
-          { title: "Evidence Vault", url: "/compliance/evidence" },
+          { title: "Evidence Vault", url: "/compliance/evidence", permission: "evidence.read" },
           { title: "Registers", url: "/compliance/registers" },
           { title: "Inspection Mode", url: "/compliance/inspection" },
         ]
@@ -144,8 +149,10 @@ const navigation: { label: string; items: NavItem[] }[] = [
         icon: Settings,
         children: [
           { title: "School Profile", url: "/settings/school" },
-          { title: "Roles & Permissions", url: "/settings/roles" },
-          { title: "Policies", url: "/settings/policies" },
+          { title: "Users", url: "/settings/users", permission: "users.admin" },
+          { title: "Roles & Permissions", url: "/settings/roles", permission: "roles.read" },
+          { title: "Policies", url: "/settings/policies", permission: "policies.read" },
+          { title: "Audit Log", url: "/settings/audit", permission: "audit.read" },
           { title: "Board Packs", url: "/settings/board-packs" },
           { title: "Templates", url: "/settings/templates" },
           { title: "Import/Export", url: "/settings/import-export" },
@@ -158,11 +165,24 @@ const navigation: { label: string; items: NavItem[] }[] = [
 export function AppSidebar() {
   const location = useLocation();
   const currentPath = location.pathname;
+  const { profile, roles } = useAuth();
+  const { canAccess } = usePermissionGate();
 
   const isActive = (url: string) => currentPath === url;
   const isParentActive = (item: NavItem) => {
     if (isActive(item.url)) return true;
     return item.children?.some(child => isActive(child.url)) ?? false;
+  };
+
+  const canAccessItem = (item: { permission?: Permission }) => {
+    if (!item.permission) return true;
+    return canAccess({ permission: item.permission });
+  };
+
+  // Filter children based on permissions
+  const getVisibleChildren = (children: { title: string; url: string; permission?: Permission }[] | undefined) => {
+    if (!children) return [];
+    return children.filter(canAccessItem);
   };
 
   return (
@@ -191,8 +211,13 @@ export function AppSidebar() {
             <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {group.items.map((item) => (
-                  item.children ? (
+                {group.items.map((item) => {
+                  const visibleChildren = getVisibleChildren(item.children);
+                  
+                  // Skip if no permission for item and no visible children
+                  if (!canAccessItem(item) && visibleChildren.length === 0) return null;
+
+                  return visibleChildren.length > 0 ? (
                     <Collapsible 
                       key={item.title} 
                       asChild 
@@ -212,7 +237,7 @@ export function AppSidebar() {
                         </CollapsibleTrigger>
                         <CollapsibleContent>
                           <SidebarMenuSub>
-                            {item.children.map((child) => (
+                            {visibleChildren.map((child) => (
                               <SidebarMenuSubItem key={child.title}>
                                 <SidebarMenuSubButton 
                                   asChild
@@ -241,8 +266,8 @@ export function AppSidebar() {
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
-                  )
-                ))}
+                  );
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
@@ -254,11 +279,13 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg">
               <div className="flex aspect-square size-8 items-center justify-center rounded-full bg-primary/10 text-primary font-medium">
-                AK
+                {profile?.full_name?.slice(0, 2).toUpperCase() || 'U'}
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
-                <span className="font-medium text-sm">Arun Kumar</span>
-                <span className="text-xs text-muted-foreground">Principal</span>
+                <span className="font-medium text-sm">{profile?.full_name || 'User'}</span>
+                <span className="text-xs text-muted-foreground capitalize">
+                  {roles.length > 0 ? roles[0] : 'No role'}
+                </span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
